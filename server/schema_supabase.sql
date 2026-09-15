@@ -24,6 +24,11 @@ CREATE TABLE IF NOT EXISTS consents (
 ALTER TABLE consents
     ADD COLUMN IF NOT EXISTS konsulent_navn TEXT;
 
+ALTER TABLE consents
+    ADD COLUMN IF NOT EXISTS cpr      TEXT,
+    ADD COLUMN IF NOT EXISTS reg_nr   TEXT,
+    ADD COLUMN IF NOT EXISTS konto_nr TEXT;
+
 CREATE INDEX IF NOT EXISTS consents_created_at_idx ON consents (created_at DESC);
 CREATE INDEX IF NOT EXISTS consents_telefon_idx   ON consents (telefon);
 
