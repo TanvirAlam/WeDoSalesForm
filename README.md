@@ -1,46 +1,89 @@
-# Getting Started with Create React App
+# We Do Sales · Samtykke
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+We Do Sales samtykkeformular (consent form) bygget med **Next.js**, **React**, **TypeScript** og **Supabase**.
 
-## Available Scripts
+Deployes som **én enkelt app på Vercel** — frontend og API i samme projekt.
 
-In the project directory, you can run:
+## Struktur
 
-### `npm start`
+```
+src/
+  app/
+    layout.tsx      # Root layout (HTML, head, fonts)
+    page.tsx        # Hovedside — samtykkeformularen (client component)
+    globals.css     # Globale styles
+    api/
+      health/route.ts   # GET /api/health
+      config/route.ts   # GET /api/config
+      consent/route.ts  # POST /api/consent (Supabase)
+  lib/
+    supabase.ts   # Supabase klient (server-side)
+    types.ts      # TypeScript typer for tabeller
+public/             # Statiske filer (favicon, logos)
+server/
+  migrate.js        # Supabase migration helper
+  schema_supabase.sql # SQL til Supabase SQL Editor
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Kommandos
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Installation
 
-### `npm test`
+```bash
+npm install
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Udvikling
 
-### `npm run build`
+```bash
+npm run dev
+# Åbn http://localhost:3000
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Bygget
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+npm run build
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Produktion (lokalt)
 
-### `npm run eject`
+```bash
+npm run start
+# Åbn http://localhost:3000
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Lint
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+npm run lint
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Database migration
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```bash
+npm run migrate          # Udskriver SQL fra server/schema_supabase.sql
+npm run migrate:status   # Vis vejledning til opsætning i Supabase
+```
 
-## Learn More
+## Deployment til Vercel
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Push koden til GitHub/GitLab
+2. Importér repoet på [vercel.com](https://vercel.com)
+3. Sæt miljøvariabler i Vercel dashboard:
+   - `SUPABASE_URL` — din Supabase URL
+   - `SUPABASE_SERVICE_ROLE_KEY` — din Service Role Key
+4. Deploy!
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Ingen separat server eller Docker nødvendig — Next.js API routes og frontend serveres fra samme Vercel-prov.
+
+## Supabase Opsætning
+
+1. Opret et projekt på [supabase.com](https://supabase.com)
+2. Gå til **SQL Editor** og kør `server/schema_supabase.sql`
+3. Kopier **Service Role Key** fra Settings → API → Service Role Key
+4. Sæt `SUPABASE_URL` og `SUPABASE_SERVICE_ROLE_KEY` i din `.env` fil (eller Vercel miljøvariabler)
+
+## Database
+
+Database-schema findes i `server/schema_supabase.sql`. Tabellerne `consents` og `consent_partners` oprettes ved kørsel af SQL-filen i Supabase SQL editor.

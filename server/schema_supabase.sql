@@ -1,4 +1,9 @@
--- 0001 · initial schema for We Do Sales samtykke
+-- 001 · initial schema for We Do Sales samtykke (Supabase / Postgres)
+-- Kør i Supabase SQL editor: Settings → SQL Editor → SQL
+
+-- FORSKRIVTNING: Underskrift uploades til Supabase Storage bucket "WeDoSalesBucket"
+-- Denne kolonne gemmer IKKE base64 - den gemmer en URL
+-- Opret bucket først: Dashboard → Storage → New Bucket → "WeDoSalesBucket" (Public)
 
 CREATE TABLE IF NOT EXISTS consents (
     id              BIGSERIAL PRIMARY KEY,
@@ -7,16 +12,15 @@ CREATE TABLE IF NOT EXISTS consents (
     navn            TEXT NOT NULL,
     telefon         TEXT NOT NULL,
     email           TEXT NOT NULL,
-    underskrift     TEXT NOT NULL,        -- base64 PNG (data URL)
+    underskrift    TEXT NOT NULL,        -- URL til Supabase Storage bucket "WeDoSalesBucket"
     kampagne        TEXT NOT NULL,
     saelger_navn    TEXT NOT NULL,
     saelger_id      TEXT NOT NULL,
-    konsulent_navn  TEXT,                 -- navn på den sælger/konsulent der sidder med kunden
+    konsulent_navn  TEXT,
     enhed           TEXT,
     version         TEXT NOT NULL DEFAULT 'samtykke-v2.0'
 );
 
--- Migration: tilføj konsulent_navn hvis tabellen allerede findes uden kolonnen.
 ALTER TABLE consents
     ADD COLUMN IF NOT EXISTS konsulent_navn TEXT;
 
