@@ -77,6 +77,9 @@ function App() {
 function FormView({ cfg, apiBase }: { cfg: Config; apiBase: string }) {
     const partnere = cfg.partnere;
 
+    const formRef = useRef<HTMLFormElement>(null);
+    const consentsRef = useRef<HTMLDivElement>(null);
+    const formErrRef = useRef<HTMLDivElement>(null);
     const konsulentRef = useRef<HTMLInputElement>(null);
     const navnRef = useRef<HTMLInputElement>(null);
     const tlfRef = useRef<HTMLInputElement>(null);
@@ -218,15 +221,14 @@ function FormView({ cfg, apiBase }: { cfg: Config; apiBase: string }) {
             );
             if (el) valgteIds.push(p.id);
         });
-        const consentsEl = document.getElementById('consents')!;
-        consentsEl.dataset.invalid = valgteIds.length ? 'false' : 'true';
+        consentsRef.current!.dataset.invalid = valgteIds.length ? 'false' : 'true';
         if (!valgteIds.length) fejl.push('mindst én tilladelse');
 
         const hasInk = inkRef.current;
         wrapRef.current!.dataset.invalid = hasInk ? 'false' : 'true';
         if (!hasInk) fejl.push('underskrift');
 
-        const box = document.getElementById('formerr')!;
+        const box = formErrRef.current!;
         if (fejl.length) {
             box.textContent = 'Mangler: ' + fejl.join(', ') + '.';
             box.classList.add('show');
@@ -282,16 +284,20 @@ function FormView({ cfg, apiBase }: { cfg: Config; apiBase: string }) {
     };
 
     const again = () => {
-        (document.getElementById('form') as HTMLFormElement).reset();
+        // Nulstil alt formular-tilstand. Vi bruger refs så det også virker
+        // hvis knappen trykkes mens kvitteringen er synlig (dér er formen
+        // unmountet, så vi undgår document.getElementById('form')==null).
+        formRef.current?.reset();
         document
             .querySelectorAll('[aria-invalid]')
             .forEach(el => el.setAttribute('aria-invalid', 'false'));
-        document.getElementById('consents')!.setAttribute('data-invalid', 'false');
-        document.getElementById('formerr')!.classList.remove('show');
+        consentsRef.current?.setAttribute('data-invalid', 'false');
+        formErrRef.current?.classList.remove('show');
         clearSig();
         setKvittering(null);
         window.scrollTo({ top: 0 });
-        navnRef.current?.focus();
+        // Fokusér først når form-feltet er monteret igen.
+        setTimeout(() => navnRef.current?.focus(), 0);
     };
 
     const kortTekst = (p: Partner) =>
@@ -380,7 +386,7 @@ function FormView({ cfg, apiBase }: { cfg: Config; apiBase: string }) {
                 </p>
             </div>
 
-            <form id="form" onSubmit={handleSubmit} noValidate>
+            <form id="form" ref={formRef} onSubmit={handleSubmit} noValidate>
                 <div className="field">
                     <label htmlFor="konsulent">Navnet på konsulenten / sælgeren</label>
                     <input
@@ -426,7 +432,7 @@ function FormView({ cfg, apiBase }: { cfg: Config; apiBase: string }) {
                     <div className="err">Tjek e-mailadressen.</div>
                 </div>
 
-                <div className="consents" id="consents" data-invalid="false">
+                <div className="consents" id="consents" ref={consentsRef} data-invalid="false">
                     <div className="consents-head">
                         <h2>Tilladelser</h2>
                         <p>
@@ -522,7 +528,7 @@ function FormView({ cfg, apiBase }: { cfg: Config; apiBase: string }) {
                 <button type="submit" className="submit" disabled={busy}>
                     Bekræft tilladelser
                 </button>
-                <div className="formerr" id="formerr" />
+                <div className="formerr" id="formerr" ref={formErrRef} />
             </form>
 
             <p className="legal">
