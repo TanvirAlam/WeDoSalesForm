@@ -32,11 +32,22 @@ const KAMPAGNE = {
     wdsCvr:   process.env.WDS_CVR || '',
 };
 
-// Initialiser schema ved opstart (idempotent).
+// Initialiser schema ved opstart. Bruger migrate.js så vi også tracker
+// anvendte migrationer i _migrations. Styres af AUTO_MIGRATE (default true).
 async function initSchema() {
-    const sql = fs.readFileSync(SCHEMA_PATH, 'utf8');
-    await pool.query(sql);
-    console.log('✓ Postgres schema klar');
+    const auto = (process.env.AUTO_MIGRATE || 'true').toLowerCase() !== 'false';
+    if (!auto) {
+        console.log('↷ AUTO_MIGRATE=false — springer migrationer over.');
+        return;
+    }
+    // Kør migration-runner i-process så logs vises i samme strøm.
+    const { spawnSync } = require('child_process');
+    const r = spawnSync(process.execPath, [path.join(__dirname, 'migrate.js')], {
+        stdio: 'inherit',
+    });
+    if (r.status !== 0) {
+        throw new Error('Migrationer fejlede ved opstart');
+    }
 }
 
 function makeReference() {
