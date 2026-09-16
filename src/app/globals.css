@@ -55,9 +55,6 @@ input[aria-invalid=true]{border-color:var(--alert);background:#FDF6F4}
 .err{display:none;color:var(--alert);font-size:14px;margin-top:6px;font-weight:500}
 input[aria-invalid=true] ~ .err{display:block}
 
-/* ---------- Kontooplysninger ---------- */
-.konto-group{margin:26px 0 20px}
-.konto-group h2{font-size:20px;font-weight:800;letter-spacing:-.025em;margin:0 0 14px}
 input::placeholder{color:#B9BFB2}
 
 /* ---------- Tilladelser ---------- */

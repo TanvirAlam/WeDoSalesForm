@@ -73,18 +73,6 @@ function isValidPhone(s: string) {
   return /^\d{8}$/.test(cleanDigits(s));
 }
 
-function isValidCpr(s: string) {
-  return /^\d{10}$/.test(String(s || "").replace(/\D/g, ""));
-}
-
-function isValidRegNr(s: string) {
-  return /^\d{4}$/.test(String(s || "").replace(/\D/g, ""));
-}
-
-function isValidKontoNr(s: string) {
-  return /^\d{7,10}$/.test(String(s || "").replace(/\D/g, ""));
-}
-
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -96,9 +84,6 @@ export async function POST(req: NextRequest) {
     const valgteIds: string[] = Array.isArray(body.valgte) ? body.valgte.map(String) : [];
     const signatur = String(body.underskrift || body.signature || "");
     const konsulent = String(body.konsulent || "").trim();
-    const cpr = String(body.cpr || "").replace(/\D/g, "");
-    const regNr = String(body.regNr || "").replace(/\D/g, "");
-    const kontoNr = String(body.kontoNr || "").replace(/\D/g, "");
 
     const fejl: string[] = [];
     if (navn.length < 2) fejl.push("navn");
@@ -107,9 +92,6 @@ export async function POST(req: NextRequest) {
     if (emailBekraeft !== email) fejl.push("gentag e-mail");
     if (!accepteret) fejl.push("acceptere");
     if (konsulent.length < 2) fejl.push("konsulentens navn");
-    if (!isValidCpr(cpr)) fejl.push("CPR-nummer");
-    if (!isValidRegNr(regNr)) fejl.push("reg. nr.");
-    if (!isValidKontoNr(kontoNr)) fejl.push("konto nr.");
     if (!valgteIds.length) fejl.push("mindst én tilladelse");
     if (!signatur.startsWith("data:image/")) fejl.push("underskrift");
 
@@ -132,9 +114,6 @@ export async function POST(req: NextRequest) {
       saelger_navn: KAMPAGNE.rep.navn,
       saelger_id: KAMPAGNE.rep.id,
       konsulent_navn: konsulent,
-      cpr,
-      reg_nr: regNr,
-      konto_nr: kontoNr,
       accepteret,
       enhed: String(req.headers.get("user-agent") || ""),
       version: "samtykke-v2.0",

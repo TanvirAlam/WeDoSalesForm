@@ -25,12 +25,13 @@ ALTER TABLE consents
     ADD COLUMN IF NOT EXISTS konsulent_navn TEXT;
 
 ALTER TABLE consents
-    ADD COLUMN IF NOT EXISTS cpr      TEXT,
-    ADD COLUMN IF NOT EXISTS reg_nr   TEXT,
-    ADD COLUMN IF NOT EXISTS konto_nr TEXT;
-
-ALTER TABLE consents
     ADD COLUMN IF NOT EXISTS accepteret BOOLEAN NOT NULL DEFAULT false;
+
+-- Fjern CPR- og kontooplysninger, hvis de findes fra tidligere versioner
+ALTER TABLE consents
+    DROP COLUMN IF EXISTS cpr,
+    DROP COLUMN IF EXISTS reg_nr,
+    DROP COLUMN IF EXISTS konto_nr;
 
 CREATE INDEX IF NOT EXISTS consents_created_at_idx ON consents (created_at DESC);
 CREATE INDEX IF NOT EXISTS consents_telefon_idx   ON consents (telefon);

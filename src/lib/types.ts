@@ -10,9 +10,6 @@ export type Consent = {
   saelger_navn: string;
   saelger_id: string;
   konsulent_navn: string | null;
-  cpr: string | null;
-  reg_nr: string | null;
-  konto_nr: string | null;
   accepteret: boolean;
   enhed: string | null;
   version: string;

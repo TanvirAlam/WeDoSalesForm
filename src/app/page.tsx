@@ -81,37 +81,6 @@ function FormView({ cfg }: { cfg: Config }) {
   const tlfRef = useRef<HTMLInputElement>(null);
   const mailRef = useRef<HTMLInputElement>(null);
   const mail2Ref = useRef<HTMLInputElement>(null);
-  const cprRef = useRef<HTMLInputElement>(null);
-  const regRef = useRef<HTMLInputElement>(null);
-  const kontoRef = useRef<HTMLInputElement>(null);
-
-  /* ---------- CPR — de sidste 4 cifre skjules som xxxx ---------- */
-  const [cpr, setCpr] = useState("");
-  const cprMask =
-    cpr.length <= 6
-      ? cpr
-      : cpr.slice(0, 6) + "-" + "x".repeat(cpr.length - 6);
-
-  const onCprChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    setCpr((prev) => {
-      const firstX = raw.search(/[xX]/);
-      if (firstX === -1) {
-        return raw.replace(/\D/g, "").slice(0, 10);
-      }
-      const vis = raw
-        .slice(0, firstX)
-        .replace(/\D/g, "")
-        .slice(0, 6);
-      const rest = raw.slice(firstX);
-      const xs = (rest.match(/[xX]/g) || []).length;
-      const typed = rest.replace(/\D/g, "");
-      const nextHidden = (
-        prev.slice(6).slice(0, Math.max(0, xs)) + typed
-      ).slice(0, 10 - vis.length);
-      return (vis + nextHidden).slice(0, 10);
-    });
-  };
 
   /* ---------- Underskrift (canvas) ---------- */
   const cvRef = useRef<HTMLCanvasElement>(null);
@@ -251,20 +220,6 @@ function FormView({ cfg }: { cfg: Config }) {
     mail2.setAttribute("aria-invalid", okMail2 ? "false" : "true");
     if (!okMail2) fejl.push("gentag e-mail");
 
-    const okCpr = /^\d{10}$/.test(cpr);
-    cprRef.current?.setAttribute("aria-invalid", okCpr ? "false" : "true");
-    if (!okCpr) fejl.push("CPR-nummer");
-
-    const regCifre = regRef.current!.value.replace(/\D/g, "");
-    const okReg = /^\d{4}$/.test(regCifre);
-    regRef.current?.setAttribute("aria-invalid", okReg ? "false" : "true");
-    if (!okReg) fejl.push("reg. nr.");
-
-    const kontoCifre = kontoRef.current!.value.replace(/\D/g, "");
-    const okKonto = /^\d{7,10}$/.test(kontoCifre);
-    kontoRef.current?.setAttribute("aria-invalid", okKonto ? "false" : "true");
-    if (!okKonto) fejl.push("konto nr.");
-
     const valgteIds: string[] = [];
     partnere.forEach((p) => {
       const el = document.querySelector<HTMLInputElement>(
@@ -303,9 +258,6 @@ function FormView({ cfg }: { cfg: Config }) {
           telefon: telefonCifre,
           mail: mail.value.trim(),
           mail2: mail2.value.trim(),
-          cpr,
-          regNr: regCifre,
-          kontoNr: kontoCifre,
           accepteret,
           valgte: valgteIds,
           underskrift: cvRef.current!.toDataURL("image/png"),
@@ -347,7 +299,6 @@ function FormView({ cfg }: { cfg: Config }) {
     consentsRef.current?.setAttribute("data-invalid", "false");
     formErrRef.current?.classList.remove("show");
     clearSig();
-    setCpr("");
     setKvittering(null);
     window.scrollTo({ top: 0 });
     setTimeout(() => navnRef.current?.focus(), 0);
@@ -499,50 +450,6 @@ function FormView({ cfg }: { cfg: Config }) {
             inputMode="email"
           />
           <div className="err">E-mailene skal være ens.</div>
-        </div>
-        <div className="field">
-          <label htmlFor="cpr">CPR-nummer</label>
-          <input
-            type="text"
-            id="cpr"
-            ref={cprRef}
-            inputMode="numeric"
-            autoComplete="off"
-            placeholder="DDMMYY-XXXX"
-            value={cprMask}
-            onChange={onCprChange}
-          />
-          <div className="err">Skriv et CPR-nummer på 10 cifre.</div>
-        </div>
-
-        <div className="konto-group">
-          <h2>Indtast kontooplysninger</h2>
-          <div className="field">
-            <label htmlFor="reg">Reg. nr.</label>
-            <input
-              type="text"
-              id="reg"
-              ref={regRef}
-              inputMode="numeric"
-              autoComplete="off"
-              maxLength={4}
-              placeholder="Indtast reg. nr."
-            />
-            <div className="err">Skriv reg. nr. (4 cifre).</div>
-          </div>
-          <div className="field">
-            <label htmlFor="konto">Konto nr.</label>
-            <input
-              type="text"
-              id="konto"
-              ref={kontoRef}
-              inputMode="numeric"
-              autoComplete="off"
-              maxLength={10}
-              placeholder="Indtast kontonr."
-            />
-            <div className="err">Skriv kontonummer (7-10 cifre).</div>
-          </div>
         </div>
 
         <div className="consents" id="consents" ref={consentsRef} data-invalid="false">
