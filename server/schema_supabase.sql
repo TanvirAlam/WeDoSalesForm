@@ -29,6 +29,9 @@ ALTER TABLE consents
     ADD COLUMN IF NOT EXISTS reg_nr   TEXT,
     ADD COLUMN IF NOT EXISTS konto_nr TEXT;
 
+ALTER TABLE consents
+    ADD COLUMN IF NOT EXISTS accepteret BOOLEAN NOT NULL DEFAULT false;
+
 CREATE INDEX IF NOT EXISTS consents_created_at_idx ON consents (created_at DESC);
 CREATE INDEX IF NOT EXISTS consents_telefon_idx   ON consents (telefon);
 

@@ -91,6 +91,8 @@ export async function POST(req: NextRequest) {
     const navn = String(body.navn || "").trim();
     const telefon = cleanDigits(body.telefon);
     const email = String(body.mail || body.email || "").trim();
+    const emailBekraeft = String(body.mail2 || body.emailConfirm || "").trim();
+    const accepteret = body.accepteret === true;
     const valgteIds: string[] = Array.isArray(body.valgte) ? body.valgte.map(String) : [];
     const signatur = String(body.underskrift || body.signature || "");
     const konsulent = String(body.konsulent || "").trim();
@@ -102,6 +104,8 @@ export async function POST(req: NextRequest) {
     if (navn.length < 2) fejl.push("navn");
     if (!isValidPhone(telefon)) fejl.push("telefonnummer");
     if (!isValidEmail(email)) fejl.push("e-mail");
+    if (emailBekraeft !== email) fejl.push("gentag e-mail");
+    if (!accepteret) fejl.push("acceptere");
     if (konsulent.length < 2) fejl.push("konsulentens navn");
     if (!isValidCpr(cpr)) fejl.push("CPR-nummer");
     if (!isValidRegNr(regNr)) fejl.push("reg. nr.");
@@ -131,6 +135,7 @@ export async function POST(req: NextRequest) {
       cpr,
       reg_nr: regNr,
       konto_nr: kontoNr,
+      accepteret,
       enhed: String(req.headers.get("user-agent") || ""),
       version: "samtykke-v2.0",
     };

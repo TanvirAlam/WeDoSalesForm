@@ -36,6 +36,10 @@ h1{font-weight:800;font-size:clamp(29px,7.6vw,40px);line-height:1.05;letter-spac
 
 form{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:24px 20px}
 .field{margin-bottom:20px}
+.hrSpace{
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
 label{display:block;font-weight:500;font-size:15px;margin-bottom:7px}
 .opt{color:var(--ink-3);font-weight:400}
 input[type=text],input[type=tel],input[type=email]{

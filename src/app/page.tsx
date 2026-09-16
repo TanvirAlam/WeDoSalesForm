@@ -50,13 +50,6 @@ function Page() {
           <div className="wordmark">
             we do sales<span>.</span>
           </div>
-          <div className="repmeta">
-            <strong>{cfg.kampagne.navn}</strong>
-            <br />
-            <span>
-              {cfg.kampagne.rep.navn} · {cfg.kampagne.rep.id}
-            </span>
-          </div>
         </div>
       </header>
 
@@ -87,6 +80,7 @@ function FormView({ cfg }: { cfg: Config }) {
   const navnRef = useRef<HTMLInputElement>(null);
   const tlfRef = useRef<HTMLInputElement>(null);
   const mailRef = useRef<HTMLInputElement>(null);
+  const mail2Ref = useRef<HTMLInputElement>(null);
   const cprRef = useRef<HTMLInputElement>(null);
   const regRef = useRef<HTMLInputElement>(null);
   const kontoRef = useRef<HTMLInputElement>(null);
@@ -222,6 +216,7 @@ function FormView({ cfg }: { cfg: Config }) {
   }>(null);
 
   const [busy, setBusy] = useState(false);
+  const [accepteret, setAccepteret] = useState(false);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -229,6 +224,7 @@ function FormView({ cfg }: { cfg: Config }) {
     const navn = navnRef.current!;
     const tlf = tlfRef.current!;
     const mail = mailRef.current!;
+    const mail2 = mail2Ref.current!;
 
     const fejl: string[] = [];
 
@@ -249,6 +245,11 @@ function FormView({ cfg }: { cfg: Config }) {
     const okMail = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(mail.value.trim());
     mail.setAttribute("aria-invalid", okMail ? "false" : "true");
     if (!okMail) fejl.push("e-mail");
+
+    const okMail2 =
+      okMail && mail2.value.trim() === mail.value.trim();
+    mail2.setAttribute("aria-invalid", okMail2 ? "false" : "true");
+    if (!okMail2) fejl.push("gentag e-mail");
 
     const okCpr = /^\d{10}$/.test(cpr);
     cprRef.current?.setAttribute("aria-invalid", okCpr ? "false" : "true");
@@ -301,9 +302,11 @@ function FormView({ cfg }: { cfg: Config }) {
           navn: navn.value.trim(),
           telefon: telefonCifre,
           mail: mail.value.trim(),
+          mail2: mail2.value.trim(),
           cpr,
           regNr: regCifre,
           kontoNr: kontoCifre,
+          accepteret,
           valgte: valgteIds,
           underskrift: cvRef.current!.toDataURL("image/png"),
         }),
@@ -452,6 +455,7 @@ function FormView({ cfg }: { cfg: Config }) {
           />
           <div className="err">Skriv dit eget navn som sælger.</div>
         </div>
+        <hr className="hrSpace" />
         <div className="field">
           <label htmlFor="navn">Fulde navn</label>
           <input
@@ -484,6 +488,17 @@ function FormView({ cfg }: { cfg: Config }) {
             inputMode="email"
           />
           <div className="err">Tjek e-mailadressen.</div>
+        </div>
+        <div className="field">
+          <label htmlFor="mail2">Gentag e-mail</label>
+          <input
+            type="email"
+            id="mail2"
+            ref={mail2Ref}
+            autoComplete="off"
+            inputMode="email"
+          />
+          <div className="err">E-mailene skal være ens.</div>
         </div>
         <div className="field">
           <label htmlFor="cpr">CPR-nummer</label>
@@ -607,6 +622,19 @@ function FormView({ cfg }: { cfg: Config }) {
               ))}
             </div>
           </details>
+          <label className="partner">
+              <input
+                type="checkbox"
+                checked={accepteret}
+                onChange={(e) => setAccepteret(e.target.checked)}
+              />
+              <span>
+                <span className="p-navn">Acceptere</span>
+                <span className="p-meta">
+                  Jeg giver samtykke til at Modstrøm må kontakte mig med markedsføring om elaftaler via telefon, e-mail og SMS. Du kan til enhver tid tilbagekalde dit samtykke her (https://www.modstroem.dk/diverse/blacklist/). Læs mere om virksomheden og behandlingen af dine personoplysninger i vores koncern-persondatapolitik (https://www.modstroem.dk/diverse/persondatapolitik/)
+                </span>
+              </span>
+          </label>
         </div>
 
         <div className="field" style={{ marginTop: 26 }}>
@@ -623,7 +651,11 @@ function FormView({ cfg }: { cfg: Config }) {
           </div>
         </div>
 
-        <button type="submit" className="submit" disabled={busy}>
+        <button
+          type="submit"
+          className="submit"
+          disabled={busy || !accepteret}
+        >
           Bekræft tilladelser
         </button>
         <div className="formerr" id="formerr" ref={formErrRef} />
