@@ -69,6 +69,10 @@ input::placeholder{color:#B9BFB2}
   border:1.5px solid var(--line);border-radius:8px;background:#fff;
   cursor:pointer;transition:border-color .12s ease,background .12s ease;
 }
+.partner > span{
+  min-width:0;flex:1 1 auto;
+  overflow-wrap:anywhere;word-break:break-word;
+}
 .partner:has(input:checked){border-color:var(--ink);background:#FCFDF7}
 .partner input[type=checkbox]{
   flex:0 0 auto;width:24px;height:24px;margin:2px 0 0;
@@ -83,7 +87,7 @@ input::placeholder{color:#B9BFB2}
 
 details{margin:8px 2px 0;font-size:14.5px;color:var(--ink-2)}
 summary{cursor:pointer;font-weight:500;color:var(--ink);padding:6px 0}
-details .body{padding:12px 0 4px;line-height:1.6}
+details .body{padding:12px 0 4px;line-height:1.6;overflow-wrap:anywhere;word-break:break-word}
 details .body p{margin:0 0 10px}
 details .body h4{font-family:"Instrument Sans",sans-serif;font-size:14.5px;font-weight:600;margin:16px 0 6px;display:block;text-transform:none;font-weight:600}
 details .body strong{font-weight:600}
