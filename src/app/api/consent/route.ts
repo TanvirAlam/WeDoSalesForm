@@ -84,6 +84,7 @@ export async function POST(req: NextRequest) {
     const valgteIds: string[] = Array.isArray(body.valgte) ? body.valgte.map(String) : [];
     const signatur = String(body.underskrift || body.signature || "");
     const konsulent = String(body.konsulent || "").trim();
+    const saelgerUrl = String(body.saelgerUrl || "").trim();
 
     const fejl: string[] = [];
     if (navn.length < 2) fejl.push("navn");
@@ -92,6 +93,7 @@ export async function POST(req: NextRequest) {
     if (emailBekraeft !== email) fejl.push("gentag e-mail");
     if (!accepteret) fejl.push("acceptere");
     if (konsulent.length < 2) fejl.push("konsulentens navn");
+    if (!/^https?:\/\/\S+\.\S+/.test(saelgerUrl)) fejl.push("sælger URL");
     if (!valgteIds.length) fejl.push("mindst én tilladelse");
     if (!signatur.startsWith("data:image/")) fejl.push("underskrift");
 
@@ -114,6 +116,7 @@ export async function POST(req: NextRequest) {
       saelger_navn: KAMPAGNE.rep.navn,
       saelger_id: KAMPAGNE.rep.id,
       konsulent_navn: konsulent,
+      saelger_url: saelgerUrl,
       accepteret,
       enhed: String(req.headers.get("user-agent") || ""),
       version: "samtykke-v2.0",

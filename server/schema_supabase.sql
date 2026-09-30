@@ -17,12 +17,16 @@ CREATE TABLE IF NOT EXISTS consents (
     saelger_navn    TEXT NOT NULL,
     saelger_id      TEXT NOT NULL,
     konsulent_navn  TEXT,
+    saelger_url     TEXT,                -- "Insert dit sælger URL/link"
     enhed           TEXT,
     version         TEXT NOT NULL DEFAULT 'samtykke-v2.0'
 );
 
 ALTER TABLE consents
     ADD COLUMN IF NOT EXISTS konsulent_navn TEXT;
+
+ALTER TABLE consents
+    ADD COLUMN IF NOT EXISTS saelger_url TEXT;
 
 ALTER TABLE consents
     ADD COLUMN IF NOT EXISTS accepteret BOOLEAN NOT NULL DEFAULT false;

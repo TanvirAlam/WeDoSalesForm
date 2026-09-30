@@ -411,7 +411,7 @@ function FormView({ cfg }: { cfg: Config }) {
             id="konsulent"
             ref={konsulentRef}
             autoComplete="name"
-            placeholder="Fx Anders S."
+            placeholder=""
           />
           <div className="err">Skriv dit eget navn som sælger.</div>
         </div>
@@ -422,7 +422,7 @@ function FormView({ cfg }: { cfg: Config }) {
             id="saelgerUrl"
             ref={saelgerUrlRef}
             autoComplete="off"
-            placeholder="https://saelger.dk"
+            placeholder=""
           />
           <div className="err">Indsæt dit sælger URL/link.</div>
         </div>
