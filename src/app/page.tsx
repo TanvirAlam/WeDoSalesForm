@@ -77,6 +77,7 @@ function FormView({ cfg }: { cfg: Config }) {
   const consentsRef = useRef<HTMLDivElement>(null);
   const formErrRef = useRef<HTMLDivElement>(null);
   const konsulentRef = useRef<HTMLInputElement>(null);
+  const saelgerUrlRef = useRef<HTMLInputElement>(null);
   const navnRef = useRef<HTMLInputElement>(null);
   const tlfRef = useRef<HTMLInputElement>(null);
   const mailRef = useRef<HTMLInputElement>(null);
@@ -190,6 +191,7 @@ function FormView({ cfg }: { cfg: Config }) {
     e.preventDefault();
 
     const konsulentEl = konsulentRef.current!;
+    const saelgerUrlEl = saelgerUrlRef.current!;
     const navn = navnRef.current!;
     const tlf = tlfRef.current!;
     const mail = mailRef.current!;
@@ -200,6 +202,12 @@ function FormView({ cfg }: { cfg: Config }) {
     const okKonsulent = konsulentEl.value.trim().length >= 2;
     konsulentEl.setAttribute("aria-invalid", okKonsulent ? "false" : "true");
     if (!okKonsulent) fejl.push("konsulentens navn");
+
+    const okSaelgerUrl = /^https?:\/\/\S+\.\S+/.test(
+      saelgerUrlEl.value.trim()
+    );
+    saelgerUrlEl.setAttribute("aria-invalid", okSaelgerUrl ? "false" : "true");
+    if (!okSaelgerUrl) fejl.push("sælger URL");
 
     const okNavn = navn.value.trim().length >= 2;
     navn.setAttribute("aria-invalid", okNavn ? "false" : "true");
@@ -254,6 +262,7 @@ function FormView({ cfg }: { cfg: Config }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           konsulent: konsulentEl.value.trim(),
+          saelgerUrl: saelgerUrlEl.value.trim(),
           navn: navn.value.trim(),
           telefon: telefonCifre,
           mail: mail.value.trim(),
@@ -406,6 +415,17 @@ function FormView({ cfg }: { cfg: Config }) {
           />
           <div className="err">Skriv dit eget navn som sælger.</div>
         </div>
+        <div className="field">
+          <label htmlFor="saelgerUrl">Insert dit sælger URL/link</label>
+          <input
+            type="url"
+            id="saelgerUrl"
+            ref={saelgerUrlRef}
+            autoComplete="off"
+            placeholder="https://saelger.dk"
+          />
+          <div className="err">Indsæt dit sælger URL/link.</div>
+        </div>
         <hr className="hrSpace" />
         <div className="field">
           <label htmlFor="navn">Fulde navn</label>
@@ -538,7 +558,7 @@ function FormView({ cfg }: { cfg: Config }) {
               <span>
                 <span className="p-navn">Acceptere</span>
                 <span className="p-meta">
-                  Jeg giver samtykke til at Modstrøm må kontakte mig med markedsføring om elaftaler via telefon, e-mail og SMS. Du kan til enhver tid tilbagekalde dit samtykke her (https://www.modstroem.dk/diverse/blacklist/). Læs mere om virksomheden og behandlingen af dine personoplysninger i vores koncern-persondatapolitik (https://www.modstroem.dk/diverse/persondatapolitik/)
+                  Jeg giver samtykke til at Modstrøm må kontakte mig med markedsføring om elaftaler via telefon, e-mail og SMS. Du kan til enhver tid tilbagekalde dit samtykke her (<a href="https://www.modstroem.dk/diverse/blacklist/" target="_blank" rel="noopener noreferrer">https://www.modstroem.dk/diverse/blacklist/</a>). Læs mere om virksomheden og behandlingen af dine personoplysninger i vores koncern-persondatapolitik (<a href="https://www.modstroem.dk/diverse/persondatapolitik/" target="_blank" rel="noopener noreferrer">https://www.modstroem.dk/diverse/persondatapolitik/</a>)
                 </span>
               </span>
           </label>

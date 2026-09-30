@@ -42,7 +42,7 @@ form{background:var(--paper);border:1px solid var(--line);border-radius:var(--r)
 }
 label{display:block;font-weight:500;font-size:15px;margin-bottom:7px}
 .opt{color:var(--ink-3);font-weight:400}
-input[type=text],input[type=tel],input[type=email]{
+input[type=text],input[type=tel],input[type=email],input[type=url]{
   width:100%;padding:15px 14px;font:inherit;font-size:17px;
   color:var(--ink);background:#fff;border:1.5px solid var(--line);
   border-radius:8px;transition:border-color .12s ease;
@@ -81,6 +81,8 @@ input::placeholder{color:#B9BFB2}
 .p-navn{display:block;font-weight:600;font-size:16.5px;letter-spacing:-.015em;line-height:1.25}
 .p-tekst{display:block;font-size:14.5px;line-height:1.5;color:var(--ink-2);margin-top:3px}
 .p-meta{display:block;font-size:13px;color:var(--ink-3);margin-top:5px}
+.p-meta a{color:var(--ink-2);text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}
+.p-meta a:hover{color:var(--ink)}
 
 .consents[data-invalid=true] .partner{border-color:var(--alert)}
 .consents[data-invalid=true] .partner{background:#FDF6F4}
