@@ -487,10 +487,6 @@ function FormView({ cfg }: { cfg: Config }) {
                 <span>
                   <span className="p-navn">{p.navn}</span>
                   <span className="p-tekst">{kortTekst(p)}</span>
-                  <span className="p-meta">
-                    Gælder i {p.varighed} måneder · kan trækkes tilbage
-                    når som helst
-                  </span>
                 </span>
               </label>
             ))}
@@ -558,7 +554,10 @@ function FormView({ cfg }: { cfg: Config }) {
               <span>
                 <span className="p-navn">Acceptere</span>
                 <span className="p-meta">
-                  Jeg giver samtykke til at Modstrøm må kontakte mig med markedsføring om elaftaler via telefon, e-mail og SMS. Du kan til enhver tid tilbagekalde dit samtykke her (<a href="https://www.modstroem.dk/diverse/blacklist/" target="_blank" rel="noopener noreferrer">https://www.modstroem.dk/diverse/blacklist/</a>). Læs mere om virksomheden og behandlingen af dine personoplysninger i vores koncern-persondatapolitik (<a href="https://www.modstroem.dk/diverse/persondatapolitik/" target="_blank" rel="noopener noreferrer">https://www.modstroem.dk/diverse/persondatapolitik/</a>)
+                  Jeg giver samtykke til at Modstrøm må kontakte mig med markedsføring om elaftaler via telefon, e-mail og SMS. Du kan til enhver tid tilbagekalde dit samtykke her 
+                  (<a href="https://www.modstroem.dk/diverse/blacklist/" target="_blank" rel="noopener noreferrer">her</a>). 
+                  Læs mere om virksomheden og behandlingen af dine personoplysninger i vores koncern-persondatapolitik 
+                  (<a href="https://www.modstroem.dk/diverse/persondatapolitik/" target="_blank" rel="noopener noreferrer">koncern-persondatapolitik</a>)
                 </span>
               </span>
           </label>
